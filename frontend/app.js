@@ -11,28 +11,28 @@
 
 /* ─────────────────────────────────────────────────────────────
    1. CONFIGURACIÓN DE APIs
-   Cuando tengas las keys, pegálas acá abajo
+   Cuando tengamos las keys, peguemolo en cad id
 ───────────────────────────────────────────────────────────── */
 const CONFIG = {
   USD_TO_PEN: 3.70,
 
   MELI: {
-    CLIENT_ID:     'AQUI_TU_MELI_CLIENT_ID',
-    CLIENT_SECRET: 'AQUI_TU_MELI_CLIENT_SECRET',
+    CLIENT_ID:     5840807838394811,
+    CLIENT_SECRET: L00vTVPNrTI3si52sZZouQtdiTHM8Lyn,
     SITE_ID:       'MPE',
     BASE_URL:      'https://api.mercadolibre.com'
   },
 
   EBAY: {
-    APP_ID:   'AQUI_TU_EBAY_APP_ID',
+    APP_ID:   'AQUI_EL_EBAY_APP_ID',
     BASE_URL: 'https://api.ebay.com/buy/browse/v1',
     SHIP_TO:  'PE'
   },
 
   AMAZON: {
-    ACCESS_KEY:  'AQUI_TU_AMAZON_ACCESS_KEY',
-    SECRET_KEY:  'AQUI_TU_AMAZON_SECRET_KEY',
-    PARTNER_TAG: 'AQUI_TU_PARTNER_TAG',
+    ACCESS_KEY:  'AQUI_EL_AMAZON_ACCESS_KEY',
+    SECRET_KEY:  'AQUI_EL_AMAZON_SECRET_KEY',
+    PARTNER_TAG: 'AQUI_EL_PARTNER_TAG',
     REGION:      'us-east-1',
     HOST:        'webservices.amazon.com'
   }
