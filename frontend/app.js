@@ -11,28 +11,28 @@
 
 /* ─────────────────────────────────────────────────────────────
    1. CONFIGURACIÓN DE APIs
-   Cuando tengamos las keys, peguemolo en cad id
+   Cuando tengas las keys, pegálas acá abajo
 ───────────────────────────────────────────────────────────── */
 const CONFIG = {
   USD_TO_PEN: 3.70,
 
   MELI: {
-    CLIENT_ID:     '',
-    CLIENT_SECRET: '',
+    CLIENT_ID:     5840807838394811,
+    CLIENT_SECRET: "L00vTVPNrTI3si52sZZouQtdiTHM8Lyn",
     SITE_ID:       'MPE',
     BASE_URL:      'https://api.mercadolibre.com'
   },
 
   EBAY: {
-    APP_ID:   'AQUI_EL_EBAY_APP_ID',
+    APP_ID:   'AQUI_TU_EBAY_APP_ID',
     BASE_URL: 'https://api.ebay.com/buy/browse/v1',
     SHIP_TO:  'PE'
   },
 
   AMAZON: {
-    ACCESS_KEY:  'AQUI_EL_AMAZON_ACCESS_KEY',
-    SECRET_KEY:  'AQUI_EL_AMAZON_SECRET_KEY',
-    PARTNER_TAG: 'AQUI_EL_PARTNER_TAG',
+    ACCESS_KEY:  'AQUI_TU_AMAZON_ACCESS_KEY',
+    SECRET_KEY:  'AQUI_TU_AMAZON_SECRET_KEY',
+    PARTNER_TAG: 'AQUI_TU_PARTNER_TAG',
     REGION:      'us-east-1',
     HOST:        'webservices.amazon.com'
   }
@@ -1179,12 +1179,16 @@ function cerrarLoginOverlay(e) {
 }
 
 function limpiarCamposLogin() {
-  ['loginCorreo','loginPassword','regNombre','regCorreo','regPassword'].forEach(id => {
+  ['loginCorreo','loginPassword','regNombre','regCorreo','regPassword','regCodigo'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('loginError').textContent    = '';
   document.getElementById('registroError').textContent = '';
+  const principal = document.getElementById('regFormPrincipal');
+  const codigo    = document.getElementById('regFormCodigo');
+  if (principal) principal.style.display = 'block';
+  if (codigo)    codigo.style.display    = 'none';
 }
 
 /* ── Tabs login / registro ── */
@@ -1237,19 +1241,19 @@ async function hacerLogin() {
   }
 }
 
-/* ── Hacer registro ── */
+/* ── Hacer registro — PASO 1: enviar código al correo ── */
 async function hacerRegistro() {
-  const nombre    = document.getElementById('regNombre').value.trim();
-  const correo    = document.getElementById('regCorreo').value.trim();
+  const nombre     = document.getElementById('regNombre').value.trim();
+  const correo     = document.getElementById('regCorreo').value.trim();
   const contrasena = document.getElementById('regPassword').value;
-  const errEl     = document.getElementById('registroError');
-  const btn       = document.querySelector('#formRegistro .login-submit');
+  const errEl      = document.getElementById('registroError');
+  const btn        = document.querySelector('#regFormPrincipal .login-submit');
 
   if (!nombre || !correo || !contrasena) { errEl.textContent = 'Completá todos los campos.'; return; }
   if (contrasena.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
 
   btn.disabled    = true;
-  btn.textContent = 'Creando cuenta…';
+  btn.textContent = 'Enviando código…';
   errEl.textContent = '';
 
   try {
@@ -1262,6 +1266,45 @@ async function hacerRegistro() {
 
     if (!data.ok) { errEl.textContent = data.error || 'Error al registrarse.'; return; }
 
+    /* Guardar correo para el paso 2 */
+    document.getElementById('regCorreoOculto').value = correo;
+
+    /* Mostrar panel del código, ocultar formulario principal */
+    document.getElementById('regFormPrincipal').style.display = 'none';
+    document.getElementById('regFormCodigo').style.display    = 'block';
+    errEl.textContent = '';
+
+  } catch {
+    errEl.textContent = 'No se pudo conectar al servidor.';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Crear cuenta';
+  }
+}
+
+/* ── Hacer registro — PASO 2: verificar código ── */
+async function verificarCodigo() {
+  const correo = document.getElementById('regCorreoOculto').value;
+  const codigo = document.getElementById('regCodigo').value.trim();
+  const errEl  = document.getElementById('registroError');
+  const btn    = document.getElementById('btnVerificarCodigo');
+
+  if (!codigo || codigo.length !== 4) { errEl.textContent = 'Ingresá el código de 4 dígitos.'; return; }
+
+  btn.disabled    = true;
+  btn.textContent = 'Verificando…';
+  errEl.textContent = '';
+
+  try {
+    const res  = await fetch(`${API}/auth/verificar`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ correo, codigo })
+    });
+    const data = await res.json();
+
+    if (!data.ok) { errEl.textContent = data.error || 'Código incorrecto.'; return; }
+
     SESSION.token   = data.token;
     SESSION.usuario = data.usuario;
     localStorage.setItem('ps_token',   data.token);
@@ -1270,12 +1313,21 @@ async function hacerRegistro() {
     cerrarLogin();
     mostrarUsuarioLogueado(data.usuario);
     mostrarToast(`✅ Cuenta creada. Bienvenido, ${data.usuario.nombre}`);
+
   } catch {
     errEl.textContent = 'No se pudo conectar al servidor.';
   } finally {
     btn.disabled    = false;
-    btn.textContent = 'Crear cuenta';
+    btn.textContent = 'Confirmar código';
   }
+}
+
+/* ── Volver al paso 1 del registro ── */
+function volverARegistro() {
+  document.getElementById('regFormPrincipal').style.display = 'block';
+  document.getElementById('regFormCodigo').style.display    = 'none';
+  document.getElementById('regCodigo').value = '';
+  document.getElementById('registroError').textContent = '';
 }
 
 /* ── Guardar alerta (requiere login) ── */
