@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PriceScope — Compara precios al instante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!--Este es el navbar-->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a href="#" class="navbar__logo">
+        <div class="logo-icon">
+          <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+        PriceScope
+      </a>
+      <nav class="navbar__nav">
+        <a href="#hero">Inicio</a>
+        <a href="#plataformas">Plataformas</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#mis-alertas" id="navAlertas" style="display:none">Mis Alertas</a>
+      </nav>
+      <div class="navbar__auth">
+        <div id="authGuest">
+          <button class="btn-login" onclick="abrirLogin()">Iniciar sesión</button>
+        </div>
+        <div id="authUser" style="display:none">
+          <span class="auth-nombre" id="authNombre"></span>
+          <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════ MODAL LOGIN / REGISTRO ══════════ -->
+  <div class="login-overlay" id="loginOverlay" onclick="cerrarLoginOverlay(event)">
+    <div class="login-modal">
+
+      <button class="login-close" onclick="cerrarLogin()" aria-label="Cerrar">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <!-- Tabs -->
+      <div class="login-tabs">
+        <button class="login-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="login-tab" id="tabRegistro" onclick="switchTab('registro')">Registrarse</button>
+      </div>
+
+      <!-- Formulario Login -->
+      <div id="formLogin">
+        <p class="login-modal__title">Bienvenido de nuevo</p>
+        <div class="login-field">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginCorreo" placeholder="tu@correo.com" />
+        </div>
+        <div class="login-field">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button class="login-submit" onclick="hacerLogin()">Iniciar sesión</button>
+      </div>
+
+      <!-- Formulario Registro -->
+      <div id="formRegistro" style="display:none">
+        <p class="login-modal__title">Crear cuenta</p>
+        <div class="login-field">
+          <label>Nombre de usuario</label>
+          <input type="text" id="regNombre" placeholder="Tu nombre" />
+        </div>
+        <div class="login-field">
+          <label>Correo electrónico</label>
+          <input type="email" id="regCorreo" placeholder="tu@correo.com" />
+        </div>
+        <div class="login-field">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <p class="login-error" id="registroError"></p>
+        <button class="login-submit" onclick="hacerRegistro()">Crear cuenta</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ SECCIÓN MIS ALERTAS ══════════ -->
+  <section class="mis-alertas" id="mis-alertas" style="display:none">
+    <div class="container">
+      <div class="section-label">Mi cuenta</div>
+      <h2 class="section-title">Mis alertas de precio</h2>
+      <p class="section-desc">Productos que estás siguiendo. Te avisamos cuando bajen al precio que fijaste.</p>
+      <div class="alertas-grid" id="alertasGrid">
+        <div class="alertas-empty">
+          <p>No tenés alertas activas todavía.</p>
+          <p>Buscá un producto y hacé clic en 🔔 para crear una.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Una clase de nombre hero para bienvenida-->
+  <section class="hero" id="hero">
+    <div class="container hero__inner">
+
+      <div class="hero__content">
+        <span class="hero__tag">Bienvenido a PriceScope</span>
+        <h1 class="hero__title">
+          Encuentra el mejor precio<br>
+          <em>en un solo lugar</em>
+        </h1>
+        <p class="hero__desc">
+          Comparamos televisores, celulares y hardware de PC en las principales plataformas de venta
+          —MercadoLibre, eBay y más— para que siempre sepas cuándo y dónde comprar más barato.
+          Activá alertas y recibí un aviso cuando el precio baje al monto que fijás vos.
+        </p>
+
+        <div class="hero__services">
+          <div class="service-pill">
+            <span class="service-pill__icon">⚡</span>
+            <span>Comparación en tiempo real</span>
+          </div>
+          <div class="service-pill">
+            <span class="service-pill__icon">🔔</span>
+            <span>Alertas de precio por correo</span>
+          </div>
+          <div class="service-pill">
+            <span class="service-pill__icon">📊</span>
+            <span>Historial de precios</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__deco">
+        <div class="deco-card deco-card--main">
+          <p class="deco-card__label">Precio más bajo encontrado</p>
+          <p class="deco-card__price">S/ 1,299</p>
+          <p class="deco-card__product">TCL Smart TV 50" QLED 4K</p>
+          <div class="deco-card__tags">
+            <span class="stag stag--meli">MercadoLibre</span>
+            <span class="stag stag--ebay">eBay</span>
+          </div>
+        </div>
+        <div class="deco-card deco-card--mini deco-card--mini1">
+          <span class="deco-mini__icon">📺</span>
+          <p class="deco-mini__text">+2,400 TVs</p>
+        </div>
+        <div class="deco-card deco-card--mini deco-card--mini2">
+          <span class="deco-mini__icon">📱</span>
+          <p class="deco-mini__text">+5,100 Celulares</p>
+        </div>
+        <div class="deco-card deco-card--mini deco-card--mini3">
+          <span class="deco-mini__icon">🖥️</span>
+          <p class="deco-mini__text">+3,800 Hardware</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hero__wave">
+      <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f0f6ff"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Este es el fondo blanco -->
+  <section class="plataformas" id="plataformas">
+    <div class="container">
+
+      <div class="section-label">Nuestras fuentes</div>
+      <h2 class="section-title">Buscamos en las mejores plataformas</h2>
+      <p class="section-desc">
+        PriceScope conecta con MercadoLibre, eBay y otras APIs para traerte resultados de miles de vendedores
+        en un solo buscador. Vos elegís dónde comprar.
+      </p>
+
+      <div class="plat-grid">
+
+        <div class="plat-card plat-card--meli">
+          <div class="plat-card__logo">
+            <div class="plat-logo plat-logo--meli">ML</div>
+          </div>
+          <h3 class="plat-card__name">MercadoLibre</h3>
+          <p class="plat-card__desc">
+            La plataforma líder de latinoamérica. Millones de productos, envíos rápidos y vendedores verificados en Perú y toda la región.
+          </p>
+          <div class="plat-card__stats">
+            <span>✓ Vendedores verificados</span>
+            <span>✓ Envíos a todo Perú</span>
+            <span>✓ Cuotas sin interés</span>
+          </div>
+        </div>
+
+        <div class="plat-card plat-card--ebay">
+          <div class="plat-card__logo">
+            <div class="plat-logo plat-logo--ebay">eB</div>
+          </div>
+          <h3 class="plat-card__name">eBay</h3>
+          <p class="plat-card__desc">
+            El marketplace global por excelencia. Accedé a productos importados, ediciones especiales y precios internacionales competitivos.
+          </p>
+          <div class="plat-card__stats">
+            <span>✓ Marketplace global</span>
+            <span>✓ Productos importados</span>
+            <span>✓ Precios en dólares</span>
+          </div>
+        </div>
+
+        <div class="plat-card plat-card--api">
+          <div class="plat-card__logo">
+            <div class="plat-logo plat-logo--api">+</div>
+          </div>
+          <h3 class="plat-card__name">Más fuentes</h3>
+          <p class="plat-card__desc">
+            Además integramos APIs especializadas como FakeStore API y Amazon API.
+          </p>
+          <div class="plat-card__stats">
+            <span>✓ Marketplace global</span>
+            <span>✓ Imagen del producto y descripción antes de llamar a los reales productos</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="plat__wave">
+      <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,0 C480,60 960,0 1440,30 L1440,60 L0,60 Z" fill="#e8f0fe"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- El catálogo -->
+  <section class="catalogo" id="catalogo">
+    <div class="container">
+
+      <div class="section-label">Catálogo</div>
+      <h2 class="section-title">Explorá productos por categoría</h2>
+      <p class="section-desc">
+        Usá el buscador o elegí una categoría para ver los precios actuales en todas las plataformas.
+      </p>
+
+      <!-- Barra de búsqueda + selector de categoría -->
+      <div class="search-bar">
+
+        <div class="search-input-wrap">
+          <svg class="search-bar__icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Buscá un producto, marca o modelo…"
+            aria-label="Buscar producto"
+          />
+          <button class="search-btn">Buscar</button>
+        </div>
+
+        <div class="cat-selector">
+          <button class="cat-selector__btn" id="catBtn" onclick="toggleCat()" aria-expanded="false" aria-haspopup="listbox">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span id="catLabel">Categoría</span>
+            <svg class="cat-arrow" id="catArrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="cat-dropdown" id="catDropdown" role="listbox" aria-label="Categorías">
+            <button class="cat-option cat-option--active" role="option" onclick="selectCat('Todas las categorías', this)">
+              <span class="cat-option__icon">⊞</span>
+              <div>
+                <p class="cat-option__name">Todas las categorías</p>
+                <p class="cat-option__count">+11,300 productos</p>
+              </div>
+            </button>
+            <button class="cat-option" role="option" onclick="selectCat('Televisores', this)">
+              <span class="cat-option__icon">📺</span>
+              <div>
+                <p class="cat-option__name">Televisores</p>
+                <p class="cat-option__count">+2,400 productos</p>
+              </div>
+            </button>
+            <button class="cat-option" role="option" onclick="selectCat('Hardware PC', this)">
+              <span class="cat-option__icon">🖥️</span>
+              <div>
+                <p class="cat-option__name">Hardware PC</p>
+                <p class="cat-option__count">+3,800 productos</p>
+              </div>
+            </button>
+            <button class="cat-option" role="option" onclick="selectCat('Celulares', this)">
+              <span class="cat-option__icon">📱</span>
+              <div>
+                <p class="cat-option__name">Celulares</p>
+                <p class="cat-option__count">+5,100 productos</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Grid de productos -->
+      <div class="products-grid" id="productsGrid">
+
+        <article class="pcard">
+          <div class="pcard__img-wrap">
+            <div class="pcard__img pimg--tv"></div>
+            <span class="badge badge--deal">−18%</span>
+            <button class="btn-bell" aria-label="Alerta de precio">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+          </div>
+          <div class="pcard__body">
+            <div class="pcard__meta">
+              <span class="pbrand">Samsung</span>
+              <div class="stags"><span class="stag stag--meli">MeLi</span><span class="stag stag--ebay">eBay</span></div>
+            </div>
+            <h3 class="pname">Smart TV 55" QLED 4K QN55Q70C</h3>
+            <div class="pprice-row">
+              <div><p class="pfrom">Desde</p><p class="pprice">S/ 2,149</p></div>
+              <p class="pold">S/ 2,619</p>
+            </div>
+            <button class="btn-ver">Ver precios →</button>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <div class="pcard__img-wrap">
+            <div class="pcard__img pimg--cel"></div>
+            <span class="badge badge--new">Nuevo</span>
+            <button class="btn-bell" aria-label="Alerta de precio">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+          </div>
+          <div class="pcard__body">
+            <div class="pcard__meta">
+              <span class="pbrand">Apple</span>
+              <div class="stags"><span class="stag stag--meli">MeLi</span><span class="stag stag--ebay">eBay</span></div>
+            </div>
+            <h3 class="pname">iPhone 16 Pro Max 256GB Titanio Negro</h3>
+            <div class="pprice-row">
+              <div><p class="pfrom">Desde</p><p class="pprice">S/ 6,499</p></div>
+            </div>
+            <button class="btn-ver">Ver precios →</button>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <div class="pcard__img-wrap">
+            <div class="pcard__img pimg--hw"></div>
+            <span class="badge badge--deal">−12%</span>
+            <button class="btn-bell" aria-label="Alerta de precio">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+          </div>
+          <div class="pcard__body">
+            <div class="pcard__meta">
+              <span class="pbrand">NVIDIA</span>
+              <div class="stags"><span class="stag stag--meli">MeLi</span><span class="stag stag--ebay">eBay</span></div>
+            </div>
+            <h3 class="pname">GeForce RTX 4070 Super 12GB GDDR6X</h3>
+            <div class="pprice-row">
+              <div><p class="pfrom">Desde</p><p class="pprice">S/ 2,880</p></div>
+              <p class="pold">S/ 3,270</p>
+            </div>
+            <button class="btn-ver">Ver precios →</button>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <div class="pcard__img-wrap">
+            <div class="pcard__img pimg--cel2"></div>
+            <span class="badge badge--deal">−15%</span>
+            <button class="btn-bell" aria-label="Alerta de precio">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+          </div>
+          <div class="pcard__body">
+            <div class="pcard__meta">
+              <span class="pbrand">Samsung</span>
+              <div class="stags"><span class="stag stag--meli">MeLi</span></div>
+            </div>
+            <h3 class="pname">Galaxy S24 Ultra 512GB Titanium Gray</h3>
+            <div class="pprice-row">
+              <div><p class="pfrom">Desde</p><p class="pprice">S/ 4,890</p></div>
+              <p class="pold">S/ 5,750</p>
+            </div>
+            <button class="btn-ver">Ver precios →</button>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="loadmore-wrap">
+        <button class="btn-loadmore">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+          Cargar más productos
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!--El footer-->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <div class="logo-icon logo-icon--sm">
+          <svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+        PriceScope
+      </div>
+      <p class="footer__note">Tu pones el precio</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
