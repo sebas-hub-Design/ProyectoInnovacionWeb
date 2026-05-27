@@ -73,22 +73,53 @@
 
       <!-- Formulario Registro -->
       <div id="formRegistro" style="display:none">
-        <p class="login-modal__title">Crear cuenta</p>
-        <div class="login-field">
-          <label>Nombre de usuario</label>
-          <input type="text" id="regNombre" placeholder="Tu nombre" />
-        </div>
-        <div class="login-field">
-          <label>Correo electrónico</label>
-          <input type="email" id="regCorreo" placeholder="tu@correo.com" />
-        </div>
-        <div class="login-field">
-          <label>Contraseña</label>
-          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" />
-        </div>
-        <p class="login-error" id="registroError"></p>
-        <button class="login-submit" onclick="hacerRegistro()">Crear cuenta</button>
-      </div>
+  <p class="login-modal__title">Crear cuenta</p>
+
+  <!-- PASO 1: datos del usuario -->
+  <div id="regFormPrincipal">
+    <div class="login-field">
+      <label>Nombre de usuario</label>
+      <input type="text" id="regNombre" placeholder="Tu nombre" />
+    </div>
+    <div class="login-field">
+      <label>Correo electrónico</label>
+      <input type="email" id="regCorreo" placeholder="tu@correo.com" />
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" />
+    </div>
+    <p class="login-error" id="registroError"></p>
+    <button class="login-submit" onclick="hacerRegistro()">Crear cuenta</button>
+  </div>
+
+  <!-- PASO 2: verificar código (oculto hasta que se envíe el correo) -->
+  <div id="regFormCodigo" style="display:none">
+    <input type="hidden" id="regCorreoOculto" />
+    <div class="login-field">
+      <label>Código de verificación</label>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:10px">
+        Te enviamos un código de 4 dígitos a tu correo. Ingresalo acá para confirmar tu cuenta.
+      </p>
+      <input
+        type="text"
+        id="regCodigo"
+        placeholder="_ _ _ _"
+        maxlength="4"
+        inputmode="numeric"
+        pattern="[0-9]{4}"
+        style="letter-spacing:10px;font-size:24px;font-weight:700;text-align:center"
+      />
+    </div>
+    <p class="login-error" id="registroError"></p>
+    <button class="login-submit" id="btnVerificarCodigo" onclick="verificarCodigo()">Confirmar código</button>
+    <p style="font-size:12px;color:#9ca3af;text-align:center;margin-top:10px">
+      ¿No llegó? Revisá tu carpeta de spam o
+      <a href="#" onclick="volverARegistro()" style="color:#3b82f6">volvé a intentarlo</a>.
+    </p>
+  </div>
+
+</div>
 
     </div>
   </div>
