@@ -17,8 +17,8 @@ const CONFIG = {
   USD_TO_PEN: 3.70,
 
   MELI: {
-    CLIENT_ID:     5840807838394811,
-    CLIENT_SECRET: L00vTVPNrTI3si52sZZouQtdiTHM8Lyn,
+    CLIENT_ID:     '',
+    CLIENT_SECRET: '',
     SITE_ID:       'MPE',
     BASE_URL:      'https://api.mercadolibre.com'
   },
