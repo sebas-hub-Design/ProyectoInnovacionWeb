@@ -17,8 +17,8 @@ const CONFIG = {
   USD_TO_PEN: 3.70,
 
   MELI: {
-    CLIENT_ID:     5840807838394811,
-    CLIENT_SECRET: "L00vTVPNrTI3si52sZZouQtdiTHM8Lyn",
+    CLIENT_ID:     'AQUI_TU_MELI_CLIENT_ID',
+    CLIENT_SECRET: 'AQUI_TU_MELI_CLIENT_SECRET',
     SITE_ID:       'MPE',
     BASE_URL:      'https://api.mercadolibre.com'
   },
@@ -969,72 +969,69 @@ function abrirAlertaModal(id) {
     const modal = document.createElement('div');
     modal.id        = 'modalAlerta';
     modal.className = 'modal-overlay';
-    modal.innerHTML = `
-      <div class="modal modal--sm">
-        <button class="modal__close" onclick="document.getElementById('modalAlerta').remove();document.body.style.overflow=''" aria-label="Cerrar">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-        <h3 class="modal__view-title">Crear alerta de precio</h3>
-        <p class="modal__view-sub">Te avisamos cuando cualquier vendedor baje al precio que fijás.</p>
-        <div class="alert-form">
-          <div class="alert-cur">
-            <span class="alert-cur__lbl">Precio actual más bajo</span>
-            <span class="alert-cur__price">${p.precio}</span>
-          </div>
-          <label class="flabel" for="alertPrecio">¿A qué precio querés comprar?</label>
-          <div class="finput-price-wrap">
-            <span class="finput-cur">S/</span>
-            <input type="number" id="alertPrecio" placeholder="0.00" min="0" step="0.01"/>
-          </div>
-          <label class="flabel" for="alertCorreo">Tu correo electrónico</label>
-          <input type="email" id="alertCorreo" class="finput-email" placeholder="tu@correo.com"/>
-          <p class="alert-note">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            Revisamos precios cada hora en todas las plataformas.
-          </p>
-          <button class="btn-activate" onclick="guardarAlerta('${p.id}')">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+
+    if (!SESSION.token) {
+      modal.innerHTML = `
+        <div class="modal modal--sm">
+          <button class="modal__close" onclick="document.getElementById('modalAlerta').remove();document.body.style.overflow=''" aria-label="Cerrar">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+          <h3 class="modal__view-title">Crear alerta de precio</h3>
+          <p class="modal__view-sub">Para guardar alertas de precio necesitas iniciar sesion.</p>
+          <div class="alert-form" style="text-align:center;padding:16px 0">
+            <svg width="48" height="48" fill="none" stroke="#3b82f6" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:16px">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
-            Activar alerta
+            <p style="color:#374151;margin-bottom:20px">Inicia sesion para recibir alertas cuando el precio baje al monto que fijas.</p>
+            <button class="btn-activate" onclick="document.getElementById('modalAlerta').remove();document.body.style.overflow='';abrirLogin()">
+              Iniciar sesion
+            </button>
+          </div>
+        </div>`;
+    } else {
+      modal.innerHTML = `
+        <div class="modal modal--sm">
+          <button class="modal__close" onclick="document.getElementById('modalAlerta').remove();document.body.style.overflow=''" aria-label="Cerrar">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
-        </div>
-      </div>`;
+          <h3 class="modal__view-title">Crear alerta de precio</h3>
+          <p class="modal__view-sub">Te avisamos cuando cualquier vendedor baje al precio que fijas.</p>
+          <div class="alert-form">
+            <div class="alert-cur">
+              <span class="alert-cur__lbl">Precio actual mas bajo</span>
+              <span class="alert-cur__price">${p.precio}</span>
+            </div>
+            <label class="flabel" for="alertPrecio">¿A que precio queres comprar?</label>
+            <div class="finput-price-wrap">
+              <span class="finput-cur">S/</span>
+              <input type="number" id="alertPrecio" placeholder="0.00" min="0" step="0.01"/>
+            </div>
+            <p class="alert-note">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              Revisamos precios cada hora en todas las plataformas.
+            </p>
+            <button class="btn-activate" onclick="guardarAlerta('${p.id}')">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              Activar alerta
+            </button>
+          </div>
+        </div>`;
+    }
+
     document.body.appendChild(modal);
     requestAnimationFrame(() => modal.classList.add('is-open'));
     document.body.style.overflow = 'hidden';
   }, 260);
 }
 
-function guardarAlerta(id) {
-  const precio = document.getElementById('alertPrecio')?.value;
-  const correo = document.getElementById('alertCorreo')?.value;
-  const p      = STATE.results.find(r => r.id === id);
-
-  if (!precio || !correo) { alert('Completá el precio y el correo.'); return; }
-  if (!correo.includes('@')) { alert('Ingresá un correo válido.'); return; }
-
-  const alertas = JSON.parse(localStorage.getItem('ps_alertas') || '[]');
-  alertas.push({
-    id:       Date.now(),
-    producto: p?.titulo || id,
-    fuente:   p?.fuente || '',
-    url:      p?.url || '#',
-    precio:   parseFloat(precio),
-    correo,
-    fecha:    new Date().toISOString()
-  });
-  localStorage.setItem('ps_alertas', JSON.stringify(alertas));
-
-  document.getElementById('modalAlerta').remove();
-  document.body.style.overflow = '';
-  mostrarToast('✅ Alerta creada para S/ ' + precio);
-}
 
 
 /* ─────────────────────────────────────────────────────────────
@@ -1333,48 +1330,42 @@ function volverARegistro() {
 /* ── Guardar alerta (requiere login) ── */
 async function guardarAlerta(id) {
   const precio = document.getElementById('alertPrecio')?.value;
-  const correo = document.getElementById('alertCorreo')?.value;
   const p      = STATE.results.find(r => r.id === id);
 
-  if (!precio || !correo) { alert('Completá el precio y el correo.'); return; }
-  if (!correo.includes('@')) { alert('Ingresá un correo válido.'); return; }
-
-  /* Si hay sesión → guardar en backend */
-  if (SESSION.token) {
-    try {
-      const res = await fetch(`${API}/alertas`, {
-        method:  'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SESSION.token}`
-        },
-        body: JSON.stringify({
-          producto_nombre: p?.titulo || id,
-          producto_marca:  p?.marca  || '',
-          producto_modelo: p?.modelo || '',
-          pulgadas:        p?.pulgadas || '',
-          precio_objetivo: parseFloat(precio),
-          fuentes:         p?.fuente || 'MercadoLibre,eBay'
-        })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        document.getElementById('modalAlerta')?.remove();
-        document.body.style.overflow = '';
-        mostrarToast('✅ Alerta guardada para S/ ' + precio);
-        cargarMisAlertas();
-        return;
-      }
-    } catch (e) {
-      console.error('Error guardando alerta:', e);
-    }
+  if (!precio || parseFloat(precio) <= 0) {
+    mostrarToast('Ingresa un precio objetivo valido.');
+    return;
   }
 
-  /* Sin sesión → guardar en localStorage y pedir login */
-  document.getElementById('modalAlerta')?.remove();
-  document.body.style.overflow = '';
-  mostrarToast('⚠️ Iniciá sesión para guardar alertas permanentes');
-  setTimeout(() => abrirLogin(), 1500);
+  try {
+    const res = await fetch(`${API}/alertas`, {
+      method:  'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SESSION.token}`
+      },
+      body: JSON.stringify({
+        producto_nombre: p?.titulo || id,
+        producto_marca:  p?.marca  || '',
+        producto_modelo: p?.modelo || '',
+        pulgadas:        p?.pulgadas || '',
+        precio_objetivo: parseFloat(precio),
+        fuentes:         p?.fuente || 'MercadoLibre,eBay'
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('modalAlerta')?.remove();
+      document.body.style.overflow = '';
+      mostrarToast('Alerta guardada para S/ ' + precio);
+      cargarMisAlertas();
+    } else {
+      mostrarToast('Error al guardar la alerta.');
+    }
+  } catch (e) {
+    console.error('Error guardando alerta:', e);
+    mostrarToast('No se pudo conectar al servidor.');
+  }
 }
 
 /* ── Cargar mis alertas ── */
